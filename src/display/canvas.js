@@ -38,6 +38,7 @@ import {
   TilingPattern,
 } from "./pattern_helper.js";
 import { convertBlackAndWhiteToRGBA } from "../shared/image_utils.js";
+import { Dependencies } from "./canvas_dependency_tracker.js";
 
 // <canvas> contexts store most of the state we need natively.
 // However, PDF needs a bit more state, which we store here.
@@ -971,7 +972,7 @@ class CanvasGraphics {
     const fillColor = this.current.fillColor;
     const isPatternFill = this.current.patternFill;
     const currentTransform = getCurrentTransform(ctx);
-    this.dependencyTracker?.recordDependencies(opIdx, ["transform"]);
+    this.dependencyTracker?.recordDependencies(opIdx, Dependencies.transform);
 
     let cache, cacheKey, scaled, maskCanvas;
     if ((img.bitmap || img.data) && img.count > 1) {
@@ -1554,17 +1555,7 @@ class CanvasGraphics {
       }
     }
 
-    this.dependencyTracker?.recordDependencies(opIdx, [
-      "path",
-      "transform",
-      "strokeColor",
-      "strokeAlpha",
-      "lineWidth",
-      "lineCap",
-      "lineJoin",
-      "miterLimit",
-      "dash",
-    ]);
+    this.dependencyTracker?.recordDependencies(opIdx, Dependencies.stroke);
 
     if (consumePath) {
       this.consumePath(
@@ -1623,14 +1614,7 @@ class CanvasGraphics {
       }
     }
 
-    this.dependencyTracker?.recordDependencies(opIdx, [
-      "path",
-      "transform",
-      "fillColor",
-      "fillAlpha",
-      "globalCompositeOperation",
-      "SMask",
-    ]);
+    this.dependencyTracker?.recordDependencies(opIdx, Dependencies.fill);
 
     if (needRestore) {
       ctx.restore();
@@ -1673,7 +1657,7 @@ class CanvasGraphics {
   rawFillPath(opIdx, path) {
     this.ctx.fill(path);
     this.dependencyTracker
-      ?.recordDependencies(opIdx, ["fillColor", "fillAlpha"])
+      ?.recordDependencies(opIdx, Dependencies.rawFillPath)
       .recordOperation(opIdx);
   }
 
@@ -1978,24 +1962,7 @@ class CanvasGraphics {
 
   showText(opIdx, glyphs) {
     this.dependencyTracker
-      ?.recordDependencies(opIdx, [
-        "transform",
-        "leading",
-        "charSpacing",
-        "wordSpacing",
-        "hScale",
-        "textRise",
-        "moveText",
-        "textMatrix",
-        "font",
-        "fillColor",
-        "textRenderingMode",
-        "SMask",
-        "fillAlpha",
-        "strokeAlpha",
-        "globalCompositeOperation",
-        // TODO: More
-      ])
+      ?.recordDependencies(opIdx, Dependencies.showText)
       .copyDependenciesFromIncrementalOperation(opIdx, "sameLineText")
       .resetBBox(opIdx);
 
@@ -2434,7 +2401,7 @@ class CanvasGraphics {
       ?.resetBBox(opIdx)
       // TODO: Track proper bbox
       .recordFullPageBBox(opIdx)
-      .recordDependencies(opIdx, ["transform"])
+      .recordDependencies(opIdx, Dependencies.transform)
       .recordOperation(opIdx);
 
     this.compose(this.current.getClippedPathBoundingBox());
@@ -2990,13 +2957,7 @@ class CanvasGraphics {
     this.dependencyTracker
       ?.resetBBox(opIdx)
       .recordBBox(opIdx, ctx, this.groupStack, 0, width, -height, 0)
-      .recordDependencies(opIdx, [
-        "transform",
-        "SMask",
-        "fillAlpha",
-        "strokeAlpha",
-        "globalCompositeOperation",
-      ])
+      .recordDependencies(opIdx, Dependencies.imageXObject)
       .recordOperation(opIdx);
 
     drawImageAtIntegerCoords(

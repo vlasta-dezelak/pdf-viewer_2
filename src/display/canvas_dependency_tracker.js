@@ -249,4 +249,54 @@ class CanvasDependencyTracker {
   }
 }
 
-export { CanvasDependencyTracker };
+/** @satisfies {Record<string, SimpleDependency | IncrementalDependency>} */
+const Dependencies = {
+  stroke: [
+    "path",
+    "transform",
+    "strokeColor",
+    "strokeAlpha",
+    "lineWidth",
+    "lineCap",
+    "lineJoin",
+    "miterLimit",
+    "dash",
+  ],
+  fill: [
+    "path",
+    "transform",
+    "fillColor",
+    "fillAlpha",
+    "globalCompositeOperation",
+    "SMask",
+  ],
+  imageXObject: [
+    "transform",
+    "SMask",
+    "fillAlpha",
+    "strokeAlpha",
+    "globalCompositeOperation",
+  ],
+  rawFillPath: ["fillColor", "fillAlpha"],
+  showText: [
+    "transform",
+    "leading",
+    "charSpacing",
+    "wordSpacing",
+    "hScale",
+    "textRise",
+    "moveText",
+    "textMatrix",
+    "font",
+    "fillColor",
+    "textRenderingMode",
+    "SMask",
+    "fillAlpha",
+    "strokeAlpha",
+    "globalCompositeOperation",
+    // TODO: More
+  ],
+  transform: ["transform"],
+};
+
+export { CanvasDependencyTracker, Dependencies };
