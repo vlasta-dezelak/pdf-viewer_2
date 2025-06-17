@@ -2296,6 +2296,20 @@
     "type": "eq"
   },
   {
+    "id": "issue9458-partial",
+    "file": "pdfs/issue9458.pdf",
+    "md5": "ee54358d8b2fdc75dc8da5220cf8e8da",
+    "rounds": 1,
+    "link": false,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    }
+  },
+  {
     "id": "issue5501",
     "file": "pdfs/issue5501.pdf",
     "md5": "55a60699728fc92f491a2d7d490474e4",

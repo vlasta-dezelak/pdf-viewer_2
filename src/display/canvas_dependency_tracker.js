@@ -73,7 +73,11 @@ class CanvasDependencyTracker {
     }
     this.#simple = Object.getPrototypeOf(this.#simple);
     this.#incremental = Object.getPrototypeOf(this.#incremental);
-    this.#pairsStack.pop()[1] = opIdx;
+
+    const lastPair = this.#pairsStack.pop();
+    if (lastPair !== undefined) {
+      lastPair[1] = opIdx;
+    }
 
     return this;
   }
@@ -87,7 +91,10 @@ class CanvasDependencyTracker {
   }
 
   recordCloseMarker(idx) {
-    this.#pairsStack.pop()[1] = idx;
+    const lastPair = this.#pairsStack.pop();
+    if (lastPair !== undefined) {
+      lastPair[1] = idx;
+    }
     return this;
   }
 
