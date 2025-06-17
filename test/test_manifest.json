@@ -109,7 +109,7 @@
     "lastPage": 2,
     "type": "eq"
   },
-{
+  {
     "id": "issue13130-partial",
     "file": "pdfs/issue13130.pdf",
     "md5": "318518299132fe3b52252ca43a69a23e",
@@ -1048,6 +1048,20 @@
     "md5": "db682638e68391125e8982d3c984841e",
     "link": true,
     "rounds": 1,
+    "type": "eq"
+  },
+  {
+    "id": "wnv_chinese-pdf-partial",
+    "file": "pdfs/wnv_chinese.pdf",
+    "md5": "db682638e68391125e8982d3c984841e",
+    "link": true,
+    "rounds": 1,
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    },
     "type": "eq"
   },
   {

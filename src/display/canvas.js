@@ -1843,7 +1843,14 @@ class CanvasGraphics {
     return newPath;
   }
 
-  paintChar(character, x, y, patternFillTransform, patternStrokeTransform) {
+  paintChar(
+    opIdx,
+    character,
+    x,
+    y,
+    patternFillTransform,
+    patternStrokeTransform
+  ) {
     const ctx = this.ctx;
     const current = this.current;
     const font = current.font;
@@ -1923,14 +1930,40 @@ class CanvasGraphics {
         fillStrokeMode === TextRenderingMode.FILL ||
         fillStrokeMode === TextRenderingMode.FILL_STROKE
       ) {
-        // TODO: expandBBox
+        if (this.dependencyTracker) {
+          const measure = ctx.measureText(character);
+          this.dependencyTracker
+            .recordBBox(
+              opIdx,
+              this.ctx,
+              this.groupStack,
+              x - measure.actualBoundingBoxLeft,
+              x + measure.actualBoundingBoxRight,
+              y - measure.actualBoundingBoxAscent,
+              y + measure.actualBoundingBoxDescent
+            )
+            .recordDependencies(opIdx, Dependencies.fill);
+        }
         ctx.fillText(character, x, y);
       }
       if (
         fillStrokeMode === TextRenderingMode.STROKE ||
         fillStrokeMode === TextRenderingMode.FILL_STROKE
       ) {
-        // TODO: expandBBox
+        if (this.dependencyTracker) {
+          const measure = ctx.measureText(character);
+          this.dependencyTracker
+            .recordBBox(
+              opIdx,
+              this.ctx,
+              this.groupStack,
+              x - measure.actualBoundingBoxLeft,
+              x + measure.actualBoundingBoxRight,
+              y - measure.actualBoundingBoxAscent,
+              y + measure.actualBoundingBoxDescent
+            )
+            .recordDependencies(opIdx, Dependencies.stroke);
+        }
         ctx.strokeText(character, x, y);
       }
     }
@@ -2170,6 +2203,7 @@ class CanvasGraphics {
           ctx.fillText(character, scaledX, scaledY);
         } else {
           this.paintChar(
+            opIdx,
             character,
             scaledX,
             scaledY,
@@ -2182,6 +2216,7 @@ class CanvasGraphics {
             const scaledAccentY =
               scaledY - (fontSize * accent.offset.y) / fontSizeScale;
             this.paintChar(
+              opIdx,
               accent.fontChar,
               scaledAccentX,
               scaledAccentY,
