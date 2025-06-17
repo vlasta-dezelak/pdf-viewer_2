@@ -3098,6 +3098,11 @@ class CanvasGraphics {
     if (!this.contentVisible) {
       return;
     }
+    this.dependencyTracker
+      ?.resetBBox(opIdx)
+      .recordBBox(opIdx, this.ctx, this.groupStack, 0, 1, 0, 1)
+      .recordDependencies(opIdx, Dependencies.fill)
+      .recordOperation(opIdx);
     this.ctx.fillRect(0, 0, 1, 1);
     this.compose();
   }

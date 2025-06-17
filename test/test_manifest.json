@@ -1404,6 +1404,22 @@
     "type": "eq"
   },
   {
+    "id": "fit11-talk-partial",
+    "file": "pdfs/fit11-talk.pdf",
+    "md5": "eb7b224107205db4fea9f7df0185f77d",
+    "link": true,
+    "rounds": 1,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    },
+    "_": "Antialiasing where we crop the partial section",
+    "knownPartialMismatch": true
+  },
+  {
     "id": "fips197",
     "file": "pdfs/fips197.pdf",
     "md5": "4742c3f470cd8c4686a0dbb3da808b71",
