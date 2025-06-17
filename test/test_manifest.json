@@ -1244,6 +1244,22 @@
     "type": "eq"
   },
   {
+    "id": "artofwar-partial",
+    "file": "pdfs/artofwar.pdf",
+    "md5": "7bdd51c327b74f1f7abdd90eedb2f912",
+    "link": true,
+    "rounds": 1,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    },
+    "_": "TODO: I cannot figure out what the mismatch is. 'Circle differences' circles something, but then with the 'big pixels' view there are no differences.",
+    "knownPartialMismatch": true
+  },
+  {
     "id": "issue3371",
     "file": "pdfs/issue3371.pdf",
     "password": "ELXRTQWS",
