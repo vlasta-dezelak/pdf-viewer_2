@@ -1474,8 +1474,12 @@ class PDFPageProxy {
       intentState.renderTasks.delete(internalRenderTask);
 
       if (shouldRecordOperations) {
-        this.recordedGroups = internalRenderTask.gfx.dependencyTracker.take();
-        internalRenderTask.stepper?.setOperatorGroups(this.recordedGroups);
+        if (internalRenderTask.gfx) {
+          this.recordedGroups = internalRenderTask.gfx.dependencyTracker.take();
+          internalRenderTask.stepper?.setOperatorGroups(this.recordedGroups);
+        } else {
+          this.recordedGroups = [];
+        }
       }
 
       // Attempt to reduce memory usage during *printing*, by always running
