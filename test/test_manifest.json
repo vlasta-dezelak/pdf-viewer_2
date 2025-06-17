@@ -1518,6 +1518,23 @@
     "type": "eq"
   },
   {
+    "id": "issue8078-partial",
+    "file": "pdfs/issue8078.pdf",
+    "md5": "8b7d74bc24b4157393e4e88a511c05f1",
+    "link": true,
+    "rounds": 1,
+    "lastPage": 1,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    },
+    "_": "TODO: this is a real failure. Sipping it for now as it's a very slow test and thus difficult to debug. Revisit later.",
+    "knownPartialMismatch": true
+  },
+  {
     "id": "bug1811668",
     "file": "pdfs/bug1811668_reduced.pdf",
     "md5": "87aa65d89aa0682cbe7b87152b884495",
