@@ -1824,6 +1824,14 @@ class CanvasGraphics {
 
   nextLine(opIdx) {
     this.moveText(opIdx, 0, this.current.leading);
+
+    this.dependencyTracker?.recordIncrementalData(
+      "moveText",
+      // 'leading' affects 'nextLine' operations. Rather than dealing
+      // with transitive dependencies, just mark everything that depends on
+      // the 'moveText' operation as depending on the 'leading' value.
+      this.dependencyTracker.getSimpleIndex("leading") ?? opIdx
+    );
   }
 
   #getScaledPath(path, currentTransform, transform) {

@@ -177,6 +177,10 @@ class CanvasDependencyTracker {
     return this;
   }
 
+  getSimpleIndex(dependencyName) {
+    return this.#simple[dependencyName];
+  }
+
   recordDependencies(idx, dependencyNames) {
     for (const name of dependencyNames) {
       if (name in this.#simple) {

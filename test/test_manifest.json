@@ -735,6 +735,39 @@
     "type": "eq"
   },
   {
+    "id": "intelisa-partial",
+    "file": "pdfs/intelisa.pdf",
+    "md5": "24643ebe348a568cfe6a532055c71493",
+    "link": true,
+    "firstPage": 22,
+    "lastPage": 22,
+    "rounds": 1,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    },
+    "knownPartialMismatch": true
+  },
+  {
+    "id": "intelisa-84-partial",
+    "file": "pdfs/intelisa.pdf",
+    "md5": "24643ebe348a568cfe6a532055c71493",
+    "link": true,
+    "firstPage": 84,
+    "lastPage": 84,
+    "rounds": 1,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    }
+  },
+  {
     "id": "issue2128",
     "file": "pdfs/issue2128r.pdf",
     "md5": "64118f4e74590b88bd476b4178a516d5",
