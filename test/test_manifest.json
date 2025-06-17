@@ -1080,6 +1080,19 @@
     "type": "eq"
   },
   {
+    "id": "issue12798_page1_reduced-partial",
+    "file": "pdfs/issue12798_page1_reduced.pdf",
+    "md5": "f4c3e91c181b510929ade67c1e34c5c5",
+    "rounds": 1,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    }
+  },
+  {
     "id": "issue15557",
     "file": "pdfs/issue15557.pdf",
     "md5": "5f024a42acf27f3eadc4c7418e8f4e42",

@@ -65,6 +65,12 @@ class CanvasDependencyTracker {
   }
 
   restore(opIdx) {
+    const previous = Object.getPrototypeOf(this.#simple);
+    if (previous === null) {
+      // Sometimes we call more .restore() than .save(), for
+      // example when using CanvasGraphics' #restoreInitialState()
+      return this;
+    }
     this.#simple = Object.getPrototypeOf(this.#simple);
     this.#incremental = Object.getPrototypeOf(this.#incremental);
     this.#pairsStack.pop()[1] = opIdx;
