@@ -109,6 +109,23 @@
     "lastPage": 2,
     "type": "eq"
   },
+{
+    "id": "issue13130-partial",
+    "file": "pdfs/issue13130.pdf",
+    "md5": "318518299132fe3b52252ca43a69a23e",
+    "rounds": 1,
+    "link": true,
+    "firstPage": 2,
+    "lastPage": 2,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    },
+    "knownPartialMismatch": true
+  },
   {
     "id": "issue16395",
     "file": "pdfs/issue16395.pdf",
