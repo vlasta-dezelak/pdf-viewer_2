@@ -14,6 +14,10 @@
  */
 
 import {
+  CanvasNestedDependencyTracker,
+  Dependencies,
+} from "./canvas_dependency_tracker.js";
+import {
   DrawOPS,
   FeatureTest,
   FONT_IDENTITY_MATRIX,
@@ -38,7 +42,6 @@ import {
   TilingPattern,
 } from "./pattern_helper.js";
 import { convertBlackAndWhiteToRGBA } from "../shared/image_utils.js";
-import { Dependencies } from "./canvas_dependency_tracker.js";
 
 // <canvas> contexts store most of the state we need natively.
 // However, PDF needs a bit more state, which we store here.
@@ -2366,7 +2369,12 @@ class CanvasGraphics {
             {
               optionalContentConfig: this.optionalContentConfig,
               markedContentStack: this.markedContentStack,
-            }
+            },
+            undefined,
+            undefined,
+            this.dependencyTracker
+              ? new CanvasNestedDependencyTracker(this.dependencyTracker, opIdx)
+              : null
           ),
       };
       pattern = new TilingPattern(
@@ -2790,10 +2798,20 @@ class CanvasGraphics {
     // transform to draw to the identity.
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.drawImage(maskCanvas, mask.offsetX, mask.offsetY);
+    this.dependencyTracker
+      ?.resetBBox(opIdx)
+      .recordBBox(
+        opIdx,
+        this.ctx,
+        this.groupStack,
+        mask.offsetX,
+        mask.offsetX + maskCanvas.width,
+        mask.offsetY,
+        mask.offsetY + maskCanvas.height
+      )
+      .recordOperation(opIdx);
     ctx.restore();
     this.compose();
-
-    this.dependencyTracker?.recordOperation(opIdx);
   }
 
   paintImageMaskXObjectRepeat(

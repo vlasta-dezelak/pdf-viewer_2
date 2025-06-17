@@ -587,6 +587,8 @@ class TilingPattern {
 
     graphics.endDrawing();
 
+    graphics.dependencyTracker?.recordNestedDependencies?.();
+
     tmpCtx.restore();
 
     if (redrawHorizontally || redrawVertically) {

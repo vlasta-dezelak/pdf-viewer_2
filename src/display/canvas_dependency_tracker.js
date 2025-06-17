@@ -240,6 +240,18 @@ class CanvasDependencyTracker {
     return this;
   }
 
+  _extractOperation(idx) {
+    const operation = this.#operations.get(idx);
+    this.#operations.delete(idx);
+    return operation;
+  }
+
+  _pushPendingDependencies(dependencies) {
+    for (const dep of dependencies) {
+      this.#pendingDependencies.add(dep);
+    }
+  }
+
   take() {
     return Array.from(
       this.#operations,
@@ -256,6 +268,156 @@ class CanvasDependencyTracker {
         };
       }
     );
+  }
+}
+
+/**
+ * Used to track dependencies of nested operations list, that
+ * should actually all map to the index of the operation that
+ * contains the nested list.
+ *
+ * @implements {CanvasDependencyTracker}
+ */
+class CanvasNestedDependencyTracker {
+  /** @type {CanvasDependencyTracker} */
+  #dependencyTracker;
+
+  /** @type {number} */
+  #opIdx;
+
+  #outerDependencies = new Set();
+
+  constructor(dependencyTracker, opIdx) {
+    this.#dependencyTracker = dependencyTracker;
+    this.#opIdx = opIdx;
+  }
+
+  save(opIdx) {
+    this.#dependencyTracker.save(this.#opIdx);
+    return this;
+  }
+
+  restore(opIdx) {
+    this.#dependencyTracker.restore(this.#opIdx);
+    return this;
+  }
+
+  recordOpenMarker(idx) {
+    this.#dependencyTracker.recordOpenMarker(this.#opIdx);
+    return this;
+  }
+
+  recordCloseMarker(idx) {
+    this.#dependencyTracker.recordOpenMarker(this.#opIdx);
+    return this;
+  }
+
+  /**
+   * @param {SimpleDependency} name
+   * @param {number} idx
+   */
+  recordSimpleData(name, idx) {
+    this.#dependencyTracker.recordSimpleData(name, this.#opIdx);
+    return this;
+  }
+
+  /**
+   * @param {IncrementalDependency} name
+   * @param {number} idx
+   */
+  recordIncrementalData(name, idx) {
+    this.#dependencyTracker.recordIncrementalData(name, this.#opIdx);
+    return this;
+  }
+
+  /**
+   * @param {IncrementalDependency} name
+   * @param {number} idx
+   */
+  resetIncrementalData(name, idx) {
+    this.#dependencyTracker.resetIncrementalData(name, this.#opIdx);
+    return this;
+  }
+
+  recordNamedData(name, idx) {
+    // Nested dependencies are not visible to the outside.
+    return this;
+  }
+
+  // All next operations, until the next .restore(), will depend on this
+  recordFutureForcedDependency(name, idx) {
+    this.#dependencyTracker.recordFutureForcedDependency(name, this.#opIdx);
+    return this;
+  }
+
+  // All next operations, until the next .restore(), will depend on all
+  // the already recorded data with the given names.
+  inheritSimpleDataAsFutureForcedDependencies(names) {
+    this.#dependencyTracker.inheritSimpleDataAsFutureForcedDependencies(names);
+    return this;
+  }
+
+  resetBBox(idx) {
+    this.#dependencyTracker.resetBBox(this.#opIdx);
+    return this;
+  }
+
+  recordBBox(idx, ctx, otherCtxs, minX, maxX, minY, maxY) {
+    this.#dependencyTracker.recordBBox(
+      this.#opIdx,
+      ctx,
+      otherCtxs,
+      minX,
+      maxX,
+      minY,
+      maxY
+    );
+    return this;
+  }
+
+  getSimpleIndex(dependencyName) {
+    return this.#dependencyTracker.getSimpleIndex(dependencyName);
+  }
+
+  recordDependencies(idx, dependencyNames) {
+    this.#dependencyTracker.recordDependencies(this.#opIdx, dependencyNames);
+    return this;
+  }
+
+  copyDependenciesFromIncrementalOperation(idx, name) {
+    this.#dependencyTracker.copyDependenciesFromIncrementalOperation(
+      this.#opIdx,
+      name
+    );
+    return this;
+  }
+
+  recordNamedDependency(idx, name) {
+    this.#dependencyTracker.recordNamedDependency(this.#opIdx, name);
+    return this;
+  }
+
+  /**
+   * @param {number} idx
+   * @param {SimpleDependency[]} dependencyNames
+   */
+  recordOperation(idx) {
+    this.#dependencyTracker.recordOperation(this.#opIdx);
+    const operation = this.#dependencyTracker._extractOperation(this.#opIdx);
+    for (const depIdx of operation.dependencies) {
+      this.#outerDependencies.add(depIdx);
+    }
+    this.#outerDependencies.delete(this.#opIdx);
+    this.#outerDependencies.delete(null);
+    return this;
+  }
+
+  recordNestedDependencies() {
+    this.#dependencyTracker._pushPendingDependencies(this.#outerDependencies);
+  }
+
+  take() {
+    throw new Error("Unreachable");
   }
 }
 
@@ -309,4 +471,4 @@ const Dependencies = {
   transform: ["transform"],
 };
 
-export { CanvasDependencyTracker, Dependencies };
+export { CanvasDependencyTracker, CanvasNestedDependencyTracker, Dependencies };
