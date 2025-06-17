@@ -360,6 +360,8 @@ class CanvasExtraState {
 
   transferMaps = "none";
 
+  type3glyphBBox = null;
+
   constructor(width, height, preInit) {
     preInit?.(this);
 
@@ -2010,7 +2012,7 @@ class CanvasGraphics {
     const current = this.current;
     const font = current.font;
     if (font.isType3Font) {
-      this.showType3Text(glyphs);
+      this.showType3Text(opIdx, glyphs);
       this.dependencyTracker
         ?.recordOperation(opIdx)
         .recordIncrementalData("sameLineText", opIdx);
@@ -2250,7 +2252,7 @@ class CanvasGraphics {
     return undefined;
   }
 
-  showType3Text(glyphs) {
+  showType3Text(opIdx, glyphs) {
     // Type3 fonts - each glyph is a "mini-PDF"
     const ctx = this.ctx;
     const current = this.current;
@@ -2281,6 +2283,11 @@ class CanvasGraphics {
 
     ctx.scale(textHScale, fontDirection);
 
+    // Type3 fonts have their own operator list. Avoid mixing it up with the
+    // dependency tracker of the main operator list.
+    const dependencyTracker = this.dependencyTracker;
+    this.dependencyTracker = null;
+
     for (i = 0; i < glyphsLength; ++i) {
       glyph = glyphs[i];
       if (typeof glyph === "number") {
@@ -2298,7 +2305,22 @@ class CanvasGraphics {
         this.save();
         ctx.scale(fontSize, fontSize);
         ctx.transform(...fontMatrix);
+
+        this.current.type3glyphBBox = null;
         this.executeOperatorList(operatorList);
+
+        if (this.current.type3glyphBBox) {
+          dependencyTracker?.recordBBox(
+            opIdx,
+            this.ctx,
+            this.groupStack,
+            this.current.type3glyphBBox[0],
+            this.current.type3glyphBBox[2],
+            this.current.type3glyphBBox[1],
+            this.current.type3glyphBBox[3]
+          );
+        }
+
         this.restore();
       }
 
@@ -2310,6 +2332,8 @@ class CanvasGraphics {
       current.x += width * textHScale;
     }
     ctx.restore();
+
+    this.dependencyTracker = dependencyTracker;
   }
 
   // Type3 fonts
@@ -2319,7 +2343,7 @@ class CanvasGraphics {
   }
 
   setCharWidthAndBounds(opIdx, xWidth, yWidth, llx, lly, urx, ury) {
-    // TODO: Track dependencies
+    this.current.type3glyphBBox = [llx, lly, urx, ury];
     const clip = new Path2D();
     clip.rect(llx, lly, urx - llx, ury - lly);
     this.ctx.clip(clip);
