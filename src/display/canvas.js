@@ -412,10 +412,6 @@ class CanvasExtraState {
       this.getPathBoundingBox(pathType, transform)
     );
   }
-
-  takeDependencies() {}
-
-  setNextCommandsId() {}
 }
 
 function putBinaryImageData(ctx, imgData) {
@@ -797,8 +793,6 @@ class CanvasGraphics {
         fnArgs = argsArray[i] ?? null;
 
         if (fnId !== OPS.dependency) {
-          this.current.setNextCommandsId(i);
-
           if (fnArgs === null) {
             this[fnId](i);
           } else {
