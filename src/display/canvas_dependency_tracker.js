@@ -504,6 +504,7 @@ const Dependencies = {
     // TODO: More
   ],
   transform: ["transform"],
+  transformAndFill: ["transform", "fillColor"],
 };
 
 export { CanvasDependencyTracker, CanvasNestedDependencyTracker, Dependencies };

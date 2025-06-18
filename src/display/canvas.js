@@ -977,7 +977,10 @@ class CanvasGraphics {
     const fillColor = this.current.fillColor;
     const isPatternFill = this.current.patternFill;
     const currentTransform = getCurrentTransform(ctx);
-    this.dependencyTracker?.recordDependencies(opIdx, Dependencies.transform);
+    this.dependencyTracker?.recordDependencies(
+      opIdx,
+      Dependencies.transformAndFill
+    );
 
     let cache, cacheKey, scaled, maskCanvas;
     if ((img.bitmap || img.data) && img.count > 1) {
@@ -2782,9 +2785,6 @@ class CanvasGraphics {
       return;
     }
 
-    // TODO: Track proper bbox
-    this.dependencyTracker?.resetBBox(opIdx).recordFullPageBBox(opIdx);
-
     const count = img.count;
     img = this.getObject(opIdx, img.data, img);
     img.count = count;
@@ -2846,6 +2846,7 @@ class CanvasGraphics {
       mask.offsetX - currentTransform[4],
       mask.offsetY - currentTransform[5]
     );
+    this.dependencyTracker?.resetBBox(opIdx);
     for (let i = 0, ii = positions.length; i < ii; i += 2) {
       const trans = Util.transform(currentTransform, [
         scaleX,
@@ -2859,6 +2860,15 @@ class CanvasGraphics {
       // Here we want to apply the transform at the origin,
       // hence no additional computation is necessary.
       ctx.drawImage(mask.canvas, trans[4], trans[5]);
+      this.dependencyTracker?.recordBBox(
+        opIdx,
+        this.ctx,
+        this.groupStack,
+        trans[4],
+        trans[4] + mask.canvas.width,
+        trans[5],
+        trans[5] + mask.canvas.height
+      );
     }
     ctx.restore();
     this.compose();
