@@ -2325,6 +2325,9 @@ class CanvasGraphics {
             this.current.type3glyphBBox[1],
             this.current.type3glyphBBox[3]
           );
+        } else {
+          // TODO: Actually get the char bbox
+          dependencyTracker?.recordFullPageBBox(opIdx);
         }
 
         this.restore();
