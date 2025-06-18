@@ -251,14 +251,16 @@ class CanvasDependencyTracker {
    * @param {number} idx
    * @param {SimpleDependency[]} dependencyNames
    */
-  recordOperation(idx) {
+  recordOperation(idx, preserveBbox = false) {
     this.recordDependencies(idx, [FORCED_DEPENDENCY_LABEL]);
     const dependencies = new Set(this.#pendingDependencies);
     const pairs = this.#savesStack.concat(this.#markedContentStack);
     const bbox = this.#pendingBBoxIdx === idx ? this.#pendingBBox : null;
     this.#operations.set(idx, { bbox, pairs, dependencies });
-    this.#pendingBBox = null;
-    this.#pendingBBoxIdx = null;
+    if (!preserveBbox) {
+      this.#pendingBBox = null;
+      this.#pendingBBoxIdx = null;
+    }
     this.#pendingDependencies.clear();
 
     return this;
@@ -388,7 +390,6 @@ class CanvasNestedDependencyTracker {
   }
 
   resetBBox(idx) {
-    this.#dependencyTracker.resetBBox(this.#opIdx);
     return this;
   }
 
@@ -437,7 +438,7 @@ class CanvasNestedDependencyTracker {
    * @param {SimpleDependency[]} dependencyNames
    */
   recordOperation(idx) {
-    this.#dependencyTracker.recordOperation(this.#opIdx);
+    this.#dependencyTracker.recordOperation(this.#opIdx, true);
     const operation = this.#dependencyTracker._extractOperation(this.#opIdx);
     for (const depIdx of operation.dependencies) {
       this.#outerDependencies.add(depIdx);

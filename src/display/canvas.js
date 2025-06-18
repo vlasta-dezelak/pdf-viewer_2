@@ -363,8 +363,6 @@ class CanvasExtraState {
 
   transferMaps = "none";
 
-  type3glyphBBox = null;
-
   constructor(width, height, preInit) {
     preInit?.(this);
 
@@ -2292,7 +2290,9 @@ class CanvasGraphics {
     // Type3 fonts have their own operator list. Avoid mixing it up with the
     // dependency tracker of the main operator list.
     const dependencyTracker = this.dependencyTracker;
-    this.dependencyTracker = null;
+    this.dependencyTracker = dependencyTracker
+      ? new CanvasNestedDependencyTracker(dependencyTracker, opIdx)
+      : null;
 
     for (i = 0; i < glyphsLength; ++i) {
       glyph = glyphs[i];
@@ -2311,25 +2311,7 @@ class CanvasGraphics {
         this.save();
         ctx.scale(fontSize, fontSize);
         ctx.transform(...fontMatrix);
-
-        this.current.type3glyphBBox = null;
         this.executeOperatorList(operatorList);
-
-        if (this.current.type3glyphBBox) {
-          dependencyTracker?.recordBBox(
-            opIdx,
-            this.ctx,
-            this.groupStack,
-            this.current.type3glyphBBox[0],
-            this.current.type3glyphBBox[2],
-            this.current.type3glyphBBox[1],
-            this.current.type3glyphBBox[3]
-          );
-        } else {
-          // TODO: Actually get the char bbox
-          dependencyTracker?.recordFullPageBBox(opIdx);
-        }
-
         this.restore();
       }
 
@@ -2341,8 +2323,10 @@ class CanvasGraphics {
       current.x += width * textHScale;
     }
     ctx.restore();
-
-    this.dependencyTracker = dependencyTracker;
+    if (dependencyTracker) {
+      this.dependencyTracker.recordNestedDependencies();
+      this.dependencyTracker = dependencyTracker;
+    }
   }
 
   // Type3 fonts
@@ -2352,11 +2336,19 @@ class CanvasGraphics {
   }
 
   setCharWidthAndBounds(opIdx, xWidth, yWidth, llx, lly, urx, ury) {
-    this.current.type3glyphBBox = [llx, lly, urx, ury];
     const clip = new Path2D();
     clip.rect(llx, lly, urx - llx, ury - lly);
     this.ctx.clip(clip);
     this.endPath(opIdx);
+    this.dependencyTracker?.recordBBox(
+      opIdx,
+      this.ctx,
+      this.groupStack,
+      llx,
+      urx,
+      lly,
+      ury
+    );
   }
 
   // Color
