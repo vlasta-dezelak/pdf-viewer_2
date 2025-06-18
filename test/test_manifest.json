@@ -2855,6 +2855,20 @@
     "type": "eq"
   },
   {
+    "id": "issue12295-partial",
+    "file": "pdfs/issue12295.pdf",
+    "md5": "c534f74866ba8ada56010d19b57231ec",
+    "rounds": 1,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    },
+    "knownPartialMismatch": true
+  },
+  {
     "id": "bug1245391-text",
     "file": "pdfs/bug1245391_reduced.pdf",
     "md5": "6c946045ee0f2f663f269717c0f1614a",
