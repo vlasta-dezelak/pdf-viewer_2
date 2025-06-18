@@ -405,6 +405,11 @@ class CanvasNestedDependencyTracker {
     return this;
   }
 
+  recordFullPageBBox(idx) {
+    this.#dependencyTracker.recordFullPageBBox(this.#opIdx);
+    return this;
+  }
+
   getSimpleIndex(dependencyName) {
     return this.#dependencyTracker.getSimpleIndex(dependencyName);
   }
