@@ -2830,9 +2830,6 @@ class CanvasGraphics {
       return;
     }
 
-    // TODO: Track proper bbox
-    this.dependencyTracker?.resetBBox(opIdx).recordFullPageBBox(opIdx);
-
     img = this.getObject(opIdx, img.data, img);
 
     const ctx = this.ctx;
@@ -2888,6 +2885,10 @@ class CanvasGraphics {
     const fillColor = this.current.fillColor;
     const isPatternFill = this.current.patternFill;
 
+    this.dependencyTracker
+      ?.resetBBox(opIdx)
+      .recordDependencies(opIdx, Dependencies.transformAndFill);
+
     for (const image of images) {
       const { data, width, height, transform } = image;
 
@@ -2931,9 +2932,20 @@ class CanvasGraphics {
         1,
         1
       );
+
+      this.dependencyTracker?.recordBBox(
+        opIdx,
+        ctx,
+        this.groupStack,
+        0,
+        width,
+        0,
+        height
+      );
       ctx.restore();
     }
     this.compose();
+    this.dependencyTracker?.recordOperation(opIdx);
   }
 
   paintImageXObject(opIdx, objId) {

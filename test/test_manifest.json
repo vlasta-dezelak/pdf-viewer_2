@@ -2981,6 +2981,22 @@
     "type": "eq"
   },
   {
+    "id": "issue14990-partial",
+    "file": "pdfs/issue14990.pdf",
+    "md5": "0fb397e1506acc4ab8e68c18212a1362",
+    "link": true,
+    "rounds": 1,
+    "firstPage": 25,
+    "lastPage": 25,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    }
+  },
+  {
     "id": "extgstate-text",
     "file": "pdfs/extgstate.pdf",
     "md5": "001bb4ec04463a01d93aad748361f049",
