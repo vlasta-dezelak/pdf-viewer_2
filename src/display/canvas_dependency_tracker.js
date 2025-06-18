@@ -29,7 +29,9 @@ class CanvasDependencyTracker {
 
   #namedDependencies = new Map();
 
-  #pairsStack = [];
+  #savesStack = [];
+
+  #markedContentStack = [];
 
   #pendingBBox = null;
 
@@ -59,7 +61,7 @@ class CanvasDependencyTracker {
         __proto__: this.#incremental[FORCED_DEPENDENCY_LABEL],
       },
     };
-    this.#pairsStack.push([opIdx, null]);
+    this.#savesStack.push([opIdx, null]);
 
     return this;
   }
@@ -74,7 +76,7 @@ class CanvasDependencyTracker {
     this.#simple = Object.getPrototypeOf(this.#simple);
     this.#incremental = Object.getPrototypeOf(this.#incremental);
 
-    const lastPair = this.#pairsStack.pop();
+    const lastPair = this.#savesStack.pop();
     if (lastPair !== undefined) {
       lastPair[1] = opIdx;
     }
@@ -86,14 +88,29 @@ class CanvasDependencyTracker {
    * @param {number} idx
    */
   recordOpenMarker(idx) {
-    this.#pairsStack.push([idx, null]);
+    this.#savesStack.push([idx, null]);
     return this;
   }
 
   recordCloseMarker(idx) {
-    const lastPair = this.#pairsStack.pop();
+    const lastPair = this.#savesStack.pop();
     if (lastPair !== undefined) {
       lastPair[1] = idx;
+    }
+    return this;
+  }
+
+  // Marked content needs a separate stack from save/restore, because they
+  // form two independent trees.
+  beginMarkedContent(opIdx) {
+    this.#markedContentStack.push([opIdx, null]);
+    return this;
+  }
+
+  endMarkedContent(opIdx) {
+    const lastPair = this.#markedContentStack.pop();
+    if (lastPair !== undefined) {
+      lastPair[1] = opIdx;
     }
     return this;
   }
@@ -237,7 +254,7 @@ class CanvasDependencyTracker {
   recordOperation(idx) {
     this.recordDependencies(idx, [FORCED_DEPENDENCY_LABEL]);
     const dependencies = new Set(this.#pendingDependencies);
-    const pairs = this.#pairsStack.slice();
+    const pairs = this.#savesStack.concat(this.#markedContentStack);
     const bbox = this.#pendingBBoxIdx === idx ? this.#pendingBBox : null;
     this.#operations.set(idx, { bbox, pairs, dependencies });
     this.#pendingBBox = null;
@@ -310,12 +327,18 @@ class CanvasNestedDependencyTracker {
   }
 
   recordOpenMarker(idx) {
-    this.#dependencyTracker.recordOpenMarker(this.#opIdx);
     return this;
   }
 
   recordCloseMarker(idx) {
-    this.#dependencyTracker.recordOpenMarker(this.#opIdx);
+    return this;
+  }
+
+  beginMarkedContent(opIdx) {
+    return this;
+  }
+
+  endMarkedContent(opIdx) {
     return this;
   }
 

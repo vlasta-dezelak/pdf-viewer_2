@@ -2495,6 +2495,20 @@
     "about": "Optional marked content."
   },
   {
+    "id": "issue269_1-partial",
+    "file": "pdfs/issue269_1.pdf",
+    "md5": "ab932f697b4d2e2bf700de15a8efea9c",
+    "rounds": 1,
+    "type": "eq",
+    "about": "Optional marked content.",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    }
+  },
+  {
     "id": "issue269_2",
     "file": "pdfs/issue269_2.pdf",
     "md5": "0f553510850ee17c87fbab3fac564165",
