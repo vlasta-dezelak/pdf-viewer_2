@@ -7083,6 +7083,23 @@
     "type": "eq"
   },
   {
+    "id": "bug887152-partial",
+    "file": "pdfs/bug887152.pdf",
+    "md5": "783a3e7b1de2cf40a47ffe1f36a41d4f",
+    "rounds": 1,
+    "lastPage": 1,
+    "link": true,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    },
+    "TODO": "There are a ton of one-bit differences in pixel colors",
+    "knownPartialMismatch": true
+  },
+  {
     "id": "issue11473",
     "file": "pdfs/issue11473.pdf",
     "md5": "c530851b0523c81784ab4ea3115a7c67",
