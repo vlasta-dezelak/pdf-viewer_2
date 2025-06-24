@@ -6574,6 +6574,20 @@
     "about": "Rotated transparency group with blend mode."
   },
   {
+    "id": "transparency_group-partial",
+    "file": "pdfs/transparency_group.pdf",
+    "md5": "10391f76434128e5da70cff5fc485ff0",
+    "rounds": 1,
+    "type": "eq",
+    "about": "Rotated transparency group with blend mode.",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    }
+  },
+  {
     "id": "issue6010_1",
     "file": "pdfs/issue6010_1.pdf",
     "md5": "b58adce5dbb08936ddb0d904f0da8716",

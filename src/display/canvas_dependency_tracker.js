@@ -181,14 +181,15 @@ class CanvasDependencyTracker {
       matrix = otherCtxs[i].getTransform().multiply(matrix);
     }
 
-    ({ x: minX, y: minY } = matrix.transformPoint(new DOMPoint(minX, minY)));
-    ({ x: maxX, y: maxY } = matrix.transformPoint(new DOMPoint(maxX, maxY)));
-    if (maxX < minX) {
-      [maxX, minX] = [minX, maxX];
-    }
-    if (maxY < minY) {
-      [maxY, minY] = [minY, maxY];
-    }
+    const p1 = matrix.transformPoint(new DOMPoint(minX, minY));
+    const p2 = matrix.transformPoint(new DOMPoint(minX, maxY));
+    const p3 = matrix.transformPoint(new DOMPoint(maxX, minY));
+    const p4 = matrix.transformPoint(new DOMPoint(maxX, maxY));
+
+    minX = Math.min(p1.x, p2.x, p3.x, p4.x);
+    minY = Math.min(p1.y, p2.y, p3.y, p4.y);
+    maxX = Math.max(p1.x, p2.x, p3.x, p4.x);
+    maxY = Math.max(p1.y, p2.y, p3.y, p4.y);
 
     this.#pendingBBox.minX = Math.min(this.#pendingBBox.minX, minX);
     this.#pendingBBox.minY = Math.min(this.#pendingBBox.minY, minY);
