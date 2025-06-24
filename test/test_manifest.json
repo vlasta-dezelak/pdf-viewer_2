@@ -7941,6 +7941,22 @@
     "type": "eq"
   },
   {
+    "id": "issue4926-partial",
+    "file": "pdfs/issue4926.pdf",
+    "md5": "ed881c8ea2f9bc4be94ecb7f2b2c149b",
+    "rounds": 1,
+    "link": true,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    },
+    "_": "Half pixel rendering at the edge of the image",
+    "knownPartialMismatch": true
+  },
+  {
     "id": "issue16454",
     "file": "pdfs/issue16454.pdf",
     "md5": "82fe0c54a96667472ce999be7a789199",
