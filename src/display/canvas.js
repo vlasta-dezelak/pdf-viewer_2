@@ -2006,6 +2006,26 @@ class CanvasGraphics {
         fontSize,
         path,
       });
+      if (this.dependencyTracker) {
+        // TODO: Do not use ctx for this math.
+        const fontBBox = font.bbox;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(fontSize, -fontSize);
+        if (font.fontMatrix) {
+          ctx.transform(...font.fontMatrix);
+        }
+        this.dependencyTracker.recordBBox(
+          opIdx,
+          ctx,
+          this.groupStack,
+          fontBBox[0],
+          fontBBox[2],
+          fontBBox[1],
+          fontBBox[3]
+        );
+        ctx.restore();
+      }
     }
   }
 

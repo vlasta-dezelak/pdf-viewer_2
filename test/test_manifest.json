@@ -6881,6 +6881,20 @@
     "about": "CFF font that is drawn with clipping."
   },
   {
+    "id": "issue3584-partial",
+    "file": "pdfs/issue3584.pdf",
+    "md5": "7a00646865a840eefc76f05c588b60ce",
+    "rounds": 1,
+    "type": "eq",
+    "about": "CFF font that is drawn with clipping.",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    }
+  },
+  {
     "id": "prefilled_f1040",
     "file": "pdfs/prefilled_f1040.pdf",
     "md5": "2335da66fb7c2c3b84971597f27785e2",
