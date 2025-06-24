@@ -5830,6 +5830,22 @@
     "type": "eq"
   },
   {
+    "id": "issue6117-partial",
+    "file": "pdfs/issue6117.pdf",
+    "md5": "691f5f8268e07f3831e8293258a68da7",
+    "rounds": 1,
+    "link": true,
+    "firstPage": 6,
+    "lastPage": 6,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    }
+  },
+  {
     "id": "issue6238",
     "file": "pdfs/issue6238.pdf",
     "md5": "6d7731ee22fbbdf746c8da01b8922d50",

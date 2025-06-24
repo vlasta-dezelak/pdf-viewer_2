@@ -315,6 +315,13 @@ class CanvasNestedDependencyTracker {
   #outerDependencies = new Set();
 
   constructor(dependencyTracker, opIdx) {
+    if (dependencyTracker instanceof CanvasNestedDependencyTracker) {
+      // The goal of CanvasNestedDependencyTracker is to collapse all operations
+      // into a single one. If we are already in a
+      // CanvasNestedDependencyTracker, that is already happening.
+      return dependencyTracker;
+    }
+
     this.#dependencyTracker = dependencyTracker;
     this.#opIdx = opIdx;
   }
