@@ -212,14 +212,14 @@ class CanvasDependencyTracker {
   }
 
   recordDependencies(idx, dependencyNames) {
+    const pendingDependencies = this.#pendingDependencies;
+    const simple = this.#simple;
+    const incremental = this.#incremental;
     for (const name of dependencyNames) {
       if (name in this.#simple) {
-        this.#pendingDependencies.add(this.#simple[name]);
-      } else if (name in this.#incremental) {
-        this.#incremental[name].forEach(
-          this.#pendingDependencies.add,
-          this.#pendingDependencies
-        );
+        pendingDependencies.add(simple[name]);
+      } else if (name in incremental) {
+        incremental[name].forEach(pendingDependencies.add, pendingDependencies);
       }
     }
 
@@ -227,13 +227,14 @@ class CanvasDependencyTracker {
   }
 
   copyDependenciesFromIncrementalOperation(idx, name) {
-    for (let i = 0; i < this.#incremental[name].length; i++) {
-      const depIdx = this.#incremental[name][i];
-      this.#operations
+    const operations = this.#operations;
+    const pendingDependencies = this.#pendingDependencies;
+    for (const depIdx of this.#incremental[name]) {
+      operations
         .get(depIdx)
         .dependencies.forEach(
-          this.#pendingDependencies.add,
-          this.#pendingDependencies.add(depIdx)
+          pendingDependencies.add,
+          pendingDependencies.add(depIdx)
         );
     }
     return this;
