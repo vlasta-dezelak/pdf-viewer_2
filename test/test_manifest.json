@@ -4784,6 +4784,7 @@
     "type": "eq"
   },
   {
+    "TODO": "Very slow when recording",
     "id": "issue12810",
     "file": "pdfs/issue12810.pdf",
     "md5": "585e19781308603dd706f941b1ace774",
