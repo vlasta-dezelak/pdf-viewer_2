@@ -3114,16 +3114,16 @@ class CanvasGraphics {
         1,
         1
       );
-      ctx.restore();
       this.dependencyTracker?.recordBBox(
         opIdx,
-        this.ctx,
+        ctx,
         this.groupStack,
-        entry.x,
-        entry.x + entry.w,
-        -entry.h,
+        0,
+        1,
+        -1,
         0
       );
+      ctx.restore();
     }
     this.dependencyTracker?.recordOperation(opIdx);
     this.compose();

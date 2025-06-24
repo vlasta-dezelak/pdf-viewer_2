@@ -3740,6 +3740,20 @@
     "type": "eq"
   },
   {
+    "id": "tutorial-partial",
+    "file": "pdfs/tutorial.pdf",
+    "md5": "6e122f618c27f3aa9a689423e3be6b8d",
+    "link": true,
+    "rounds": 1,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    }
+  },
+  {
     "id": "geothermal.pdf",
     "file": "pdfs/geothermal.pdf",
     "md5": "ecffc0ce38ffdf1e90dc952f186e9a91",
