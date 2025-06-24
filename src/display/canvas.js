@@ -2658,7 +2658,14 @@ class CanvasGraphics {
         transferMap: group.smask.transferMap || null,
         startTransformInverse: null, // used during suspend operation
       });
-    } else {
+    }
+    if (
+      !group.smask ||
+      // When this is not an SMask group, we only need to update the current
+      // transform if recording operations bboxes, so they the bboxes have the
+      // correct transform applied.
+      this.dependencyTracker
+    ) {
       // Setup the current ctx so when the group is popped we draw it at the
       // right location.
       currentCtx.setTransform(1, 0, 0, 1, 0, 0);
@@ -2698,6 +2705,9 @@ class CanvasGraphics {
     if (group.smask) {
       this.tempSMask = this.smaskStack.pop();
       this.restore(opIdx);
+      if (this.dependencyTracker) {
+        this.ctx.restore();
+      }
     } else {
       this.ctx.restore();
       const currentMtx = getCurrentTransform(this.ctx);
