@@ -1884,18 +1884,41 @@ class CanvasGraphics {
       ctx.save();
       ctx.translate(x, y);
       ctx.scale(fontSize, -fontSize);
+
+      if (this.dependencyTracker) {
+        const fontBBox = font.bbox;
+        if (font.fontMatrix) {
+          ctx.save();
+          ctx.transform(...font.fontMatrix);
+        }
+        this.dependencyTracker.recordBBox(
+          opIdx,
+          ctx,
+          this.groupStack,
+          fontBBox[0],
+          fontBBox[2],
+          fontBBox[1],
+          fontBBox[3]
+        );
+        if (font.fontMatrix) {
+          ctx.restore();
+        }
+      }
+
       let currentTransform;
       if (
         fillStrokeMode === TextRenderingMode.FILL ||
         fillStrokeMode === TextRenderingMode.FILL_STROKE
       ) {
-        // TODO: expandBBox
         if (patternFillTransform) {
           currentTransform = ctx.getTransform();
           ctx.setTransform(...patternFillTransform);
-          ctx.fill(
-            this.#getScaledPath(path, currentTransform, patternFillTransform)
+          const scaledPath = this.#getScaledPath(
+            path,
+            currentTransform,
+            patternFillTransform
           );
+          ctx.fill(scaledPath);
         } else {
           ctx.fill(path);
         }
@@ -1921,7 +1944,6 @@ class CanvasGraphics {
           // If sx and sy are different, unfortunately we can't do anything and
           // we'll have a rendering bug.
           ctx.lineWidth *= Math.max(XY[0], XY[1]) / fontSize;
-          // TODO: expandBBox
           ctx.stroke(
             this.#getScaledPath(path, currentTransform, patternStrokeTransform)
           );
@@ -1937,6 +1959,7 @@ class CanvasGraphics {
         fillStrokeMode === TextRenderingMode.FILL_STROKE
       ) {
         if (this.dependencyTracker) {
+          // TODO: Can we do like above, rather than measureText?
           const measure = ctx.measureText(character);
           this.dependencyTracker
             .recordBBox(
