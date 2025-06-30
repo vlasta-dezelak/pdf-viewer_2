@@ -1692,10 +1692,22 @@ class CanvasGraphics {
   }
 
   endText(opIdx) {
-    this.dependencyTracker?.recordCloseMarker(opIdx);
-
     const paths = this.pendingTextPaths;
     const ctx = this.ctx;
+
+    if (this.dependencyTracker) {
+      const { dependencyTracker } = this;
+      if (paths !== undefined) {
+        dependencyTracker
+          .recordFutureForcedDependency(
+            "textClip",
+            dependencyTracker.getOpenMarker()
+          )
+          .recordFutureForcedDependency("textClip", opIdx);
+      }
+      dependencyTracker.recordCloseMarker(opIdx);
+    }
+
     if (paths !== undefined) {
       const newPath = new Path2D();
       const invTransf = ctx.getTransform().invertSelf();
@@ -2051,10 +2063,17 @@ class CanvasGraphics {
   }
 
   showText(opIdx, glyphs) {
-    this.dependencyTracker
-      ?.recordDependencies(opIdx, Dependencies.showText)
-      .copyDependenciesFromIncrementalOperation(opIdx, "sameLineText")
-      .resetBBox(opIdx);
+    if (this.dependencyTracker) {
+      this.dependencyTracker
+        .recordDependencies(opIdx, Dependencies.showText)
+        .copyDependenciesFromIncrementalOperation(opIdx, "sameLineText")
+        .resetBBox(opIdx);
+      if (this.current.textRenderingMode & TextRenderingMode.ADD_TO_PATH_FLAG) {
+        this.dependencyTracker
+          .recordFutureForcedDependency("textClip", opIdx)
+          .inheritPendingDependenciesAsFutureForcedDependencies();
+      }
+    }
 
     const current = this.current;
     const font = current.font;

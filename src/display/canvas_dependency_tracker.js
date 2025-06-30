@@ -92,6 +92,13 @@ class CanvasDependencyTracker {
     return this;
   }
 
+  getOpenMarker() {
+    if (this.#savesStack.length === 0) {
+      return null;
+    }
+    return this.#savesStack.at(-1)[0];
+  }
+
   recordCloseMarker(idx) {
     const lastPair = this.#savesStack.pop();
     if (lastPair !== undefined) {
@@ -160,6 +167,13 @@ class CanvasDependencyTracker {
       if (names[i] in this.#simple) {
         this.recordFutureForcedDependency(names[i], this.#simple[names[i]]);
       }
+    }
+    return this;
+  }
+
+  inheritPendingDependenciesAsFutureForcedDependencies() {
+    for (const dep of this.#pendingDependencies) {
+      this.recordFutureForcedDependency(FORCED_DEPENDENCY_LABEL, dep);
     }
     return this;
   }
@@ -251,7 +265,6 @@ class CanvasDependencyTracker {
 
   /**
    * @param {number} idx
-   * @param {SimpleDependency[]} dependencyNames
    */
   recordOperation(idx, preserveBbox = false) {
     this.recordDependencies(idx, [FORCED_DEPENDENCY_LABEL]);
@@ -313,6 +326,8 @@ class CanvasNestedDependencyTracker {
   /** @type {number} */
   #opIdx;
 
+  #nestingLevel = 0;
+
   #outerDependencies = new Set();
 
   constructor(dependencyTracker, opIdx) {
@@ -338,10 +353,18 @@ class CanvasNestedDependencyTracker {
   }
 
   recordOpenMarker(idx) {
+    this.#nestingLevel++;
     return this;
   }
 
+  getOpenMarker() {
+    return this.#nestingLevel > 0
+      ? this.#opIdx
+      : this.#dependencyTracker.getOpenMarker();
+  }
+
   recordCloseMarker(idx) {
+    this.#nestingLevel--;
     return this;
   }
 
@@ -395,6 +418,11 @@ class CanvasNestedDependencyTracker {
   // the already recorded data with the given names.
   inheritSimpleDataAsFutureForcedDependencies(names) {
     this.#dependencyTracker.inheritSimpleDataAsFutureForcedDependencies(names);
+    return this;
+  }
+
+  inheritPendingDependenciesAsFutureForcedDependencies() {
+    this.#dependencyTracker.inheritPendingDependenciesAsFutureForcedDependencies();
     return this;
   }
 
