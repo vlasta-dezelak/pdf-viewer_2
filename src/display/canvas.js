@@ -1899,21 +1899,25 @@ class CanvasGraphics {
 
       if (this.dependencyTracker) {
         const fontBBox = font.bbox;
-        if (font.fontMatrix) {
-          ctx.save();
-          ctx.transform(...font.fontMatrix);
-        }
-        this.dependencyTracker.recordBBox(
-          opIdx,
-          ctx,
-          this.groupStack,
-          fontBBox[0],
-          fontBBox[2],
-          fontBBox[1],
-          fontBBox[3]
-        );
-        if (font.fontMatrix) {
-          ctx.restore();
+        if (fontBBox) {
+          if (font.fontMatrix) {
+            ctx.save();
+            ctx.transform(...font.fontMatrix);
+          }
+          this.dependencyTracker.recordBBox(
+            opIdx,
+            ctx,
+            this.groupStack,
+            fontBBox[0],
+            fontBBox[2],
+            fontBBox[1],
+            fontBBox[3]
+          );
+          if (font.fontMatrix) {
+            ctx.restore();
+          }
+        } else {
+          this.dependencyTracker.recordFullPageBBox();
         }
       }
 
@@ -2021,22 +2025,26 @@ class CanvasGraphics {
       if (this.dependencyTracker) {
         // TODO: Do not use ctx for this math.
         const fontBBox = font.bbox;
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.scale(fontSize, -fontSize);
-        if (font.fontMatrix) {
-          ctx.transform(...font.fontMatrix);
+        if (fontBBox) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.scale(fontSize, -fontSize);
+          if (font.fontMatrix) {
+            ctx.transform(...font.fontMatrix);
+          }
+          this.dependencyTracker.recordBBox(
+            opIdx,
+            ctx,
+            this.groupStack,
+            fontBBox[0],
+            fontBBox[2],
+            fontBBox[1],
+            fontBBox[3]
+          );
+          ctx.restore();
+        } else {
+          this.dependencyTracker.recordFullPageBBox();
         }
-        this.dependencyTracker.recordBBox(
-          opIdx,
-          ctx,
-          this.groupStack,
-          fontBBox[0],
-          fontBBox[2],
-          fontBBox[1],
-          fontBBox[3]
-        );
-        ctx.restore();
       }
     }
   }
