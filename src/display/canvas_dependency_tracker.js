@@ -189,6 +189,10 @@ class CanvasDependencyTracker {
     return this;
   }
 
+  get hasPendingBBox() {
+    return this.#pendingBBox !== null;
+  }
+
   recordBBox(idx, ctx, otherCtxs, minX, maxX, minY, maxY) {
     let matrix = ctx.getTransform();
     for (let i = otherCtxs.length - 1; i >= 0; i--) {
@@ -433,7 +437,14 @@ class CanvasNestedDependencyTracker {
   }
 
   resetBBox(idx) {
+    if (!this.#dependencyTracker.hasPendingBBox) {
+      this.#dependencyTracker.resetBBox(this.#opIdx);
+    }
     return this;
+  }
+
+  get hasPendingBBox() {
+    return this.#dependencyTracker.hasPendingBBox;
   }
 
   recordBBox(idx, ctx, otherCtxs, minX, maxX, minY, maxY) {
