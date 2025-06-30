@@ -330,6 +330,8 @@ class CanvasNestedDependencyTracker {
 
   #outerDependencies = new Set();
 
+  #savesLevel = 0;
+
   constructor(dependencyTracker, opIdx) {
     if (dependencyTracker instanceof CanvasNestedDependencyTracker) {
       // The goal of CanvasNestedDependencyTracker is to collapse all operations
@@ -343,12 +345,16 @@ class CanvasNestedDependencyTracker {
   }
 
   save(opIdx) {
+    this.#savesLevel++;
     this.#dependencyTracker.save(this.#opIdx);
     return this;
   }
 
   restore(opIdx) {
-    this.#dependencyTracker.restore(this.#opIdx);
+    if (this.#savesLevel > 0) {
+      this.#dependencyTracker.restore(this.#opIdx);
+      this.#savesLevel--;
+    }
     return this;
   }
 
