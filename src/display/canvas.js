@@ -2545,6 +2545,7 @@ class CanvasGraphics {
       // TODO: Track proper bbox
       .recordFullPageBBox(opIdx)
       .recordDependencies(opIdx, Dependencies.transform)
+      .recordDependencies(opIdx, Dependencies.fill)
       .recordOperation(opIdx);
 
     this.compose(this.current.getClippedPathBoundingBox());

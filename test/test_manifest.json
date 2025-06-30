@@ -9420,6 +9420,20 @@
     "type": "eq"
   },
   {
+    "id": "bug1791583-partial",
+    "file": "pdfs/bug1791583.pdf",
+    "md5": "1ff6badc865c9a5e9a0dc0b7131ffe28",
+    "link": true,
+    "rounds": 1,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    }
+  },
+  {
     "id": "bug1795263",
     "file": "pdfs/bug1795263.pdf",
     "md5": "af708acbb22c6c9d268240dcf4a39809",
