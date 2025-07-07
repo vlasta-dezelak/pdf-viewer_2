@@ -11133,6 +11133,22 @@
     "type": "eq"
   },
   {
+    "id": "issue17779-partial",
+    "file": "pdfs/issue17779.pdf",
+    "md5": "764b72e8e56e22662b321b308254fd2b",
+    "talos": false,
+    "rounds": 1,
+    "link": true,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    },
+    "knownPartialMismatch": "One-bit difference in two pixels at the edge"
+  },
+  {
     "id": "issue14724",
     "file": "pdfs/issue14724.pdf",
     "md5": "34ecf91792eb54d58e0e86f877017f71",
