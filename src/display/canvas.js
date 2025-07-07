@@ -1210,7 +1210,7 @@ class CanvasGraphics {
           this.checkSMaskState();
           break;
         case "TR":
-          // TODO: Track
+          this.dependencyTracker?.recordSimpleData("filter", opIdx);
           this.ctx.filter = this.current.transferMaps =
             this.filterFactory.addFilter(value);
           break;

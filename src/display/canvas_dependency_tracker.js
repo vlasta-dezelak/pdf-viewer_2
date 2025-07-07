@@ -3,7 +3,7 @@ const FORCED_DEPENDENCY_LABEL = "__forcedDependency";
 /**
  * @typedef {"lineWidth" | "lineCap" | "lineJoin" | "miterLimit" | "dash" |
  * "strokeAlpha" | "fillColor" | "fillAlpha" | "globalCompositeOperation" |
- * "path"} SimpleDependency
+ * "path" | "filter"} SimpleDependency
  */
 
 /**
@@ -516,6 +516,7 @@ const Dependencies = {
   stroke: [
     "path",
     "transform",
+    "filter",
     "strokeColor",
     "strokeAlpha",
     "lineWidth",
@@ -527,6 +528,7 @@ const Dependencies = {
   fill: [
     "path",
     "transform",
+    "filter",
     "fillColor",
     "fillAlpha",
     "globalCompositeOperation",
@@ -535,11 +537,12 @@ const Dependencies = {
   imageXObject: [
     "transform",
     "SMask",
+    "filter",
     "fillAlpha",
     "strokeAlpha",
     "globalCompositeOperation",
   ],
-  rawFillPath: ["fillColor", "fillAlpha"],
+  rawFillPath: ["filter", "fillColor", "fillAlpha"],
   showText: [
     "transform",
     "leading",
@@ -550,6 +553,7 @@ const Dependencies = {
     "moveText",
     "textMatrix",
     "font",
+    "filter",
     "fillColor",
     "textRenderingMode",
     "SMask",

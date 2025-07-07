@@ -9823,6 +9823,20 @@
     "type": "eq"
   },
   {
+    "id": "issue16114-partial",
+    "file": "pdfs/issue16114.pdf",
+    "md5": "c04827ea33692e0f94a5e51716d9aa2e",
+    "rounds": 1,
+    "link": true,
+    "type": "eq",
+    "partial": {
+      "minX": 0.25,
+      "maxX": 0.5,
+      "minY": 0.25,
+      "maxY": 0.5
+    }
+  },
+  {
     "id": "issue16114-disable-isOffscreenCanvasSupported",
     "file": "pdfs/issue16114.pdf",
     "md5": "c04827ea33692e0f94a5e51716d9aa2e",
