@@ -163,7 +163,7 @@ class EditorToolbar {
 
   async addButton(name, tool) {
     switch (name) {
-      case "colorPicker":
+      case "highlightColorPicker":
         this.addColorPicker(tool);
         break;
       case "altText":
@@ -174,6 +174,9 @@ class EditorToolbar {
         break;
       case "delete":
         this.addDeleteButton();
+        break;
+      case "colorPicker":
+        this.addColorPicker(tool);
         break;
     }
   }

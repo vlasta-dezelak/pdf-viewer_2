@@ -304,4 +304,61 @@ class ColorPicker {
   }
 }
 
-export { ColorPicker };
+class BasicColorPicker {
+  #input = null;
+
+  #editor = null;
+
+  #uiManager = null;
+
+  static #l10nColor = null;
+
+  constructor(editor) {
+    this.#editor = editor;
+    this.#uiManager = editor._uiManager;
+    this.#input = null;
+
+    BasicColorPicker.#l10nColor ||= Object.freeze({
+      freetext: "pdfjs-editor-color-picker-free-text-input",
+      ink: "pdfjs-editor-color-picker-ink-input",
+    });
+  }
+
+  renderButton() {
+    if (this.#input) {
+      return this.#input;
+    }
+    const editor = this.#editor;
+    const { editorType, colorType, colorValue } = editor;
+    const input = (this.#input = document.createElement("input"));
+    input.type = "color";
+    input.value = colorValue || "#000000";
+    input.className = "basicColorPicker";
+    input.tabIndex = 0;
+    input.setAttribute("data-l10n-id", BasicColorPicker.#l10nColor[editorType]);
+    input.addEventListener(
+      "input",
+      () => {
+        this.#uiManager.updateParams(colorType, input.value);
+      },
+      { signal: this.#uiManager._signal }
+    );
+    return input;
+  }
+
+  update(value) {
+    if (!this.#input) {
+      return;
+    }
+    this.#input.value = value;
+  }
+
+  destroy() {
+    this.#input?.remove();
+    this.#input = null;
+  }
+
+  hideDropdown() {}
+}
+
+export { BasicColorPicker, ColorPicker };

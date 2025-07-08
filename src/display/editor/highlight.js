@@ -407,7 +407,7 @@ class HighlightEditor extends AnnotationEditor {
       const colorPicker = (this.#colorPicker = new ColorPicker({
         editor: this,
       }));
-      return [["colorPicker", colorPicker]];
+      return [["highlightColorPicker", colorPicker]];
     }
     return super.toolbarButtons;
   }
