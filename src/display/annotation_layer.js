@@ -202,17 +202,32 @@ class AnnotationElement {
       return;
     }
 
-    this.#updates ||= {
-      rect: this.data.rect.slice(0),
-    };
+    if (params.rect) {
+      this.#updates ||= {
+        rect: this.data.rect.slice(0),
+      };
+    }
 
-    const { rect } = params;
+    const { rect, popup: newPopup } = params;
 
     if (rect) {
       this.#setRectEdited(rect);
     }
 
-    this.#popupElement?.popup.updateEdited(params);
+    let popup = this.#popupElement?.popup || this.popup;
+    if (!popup && newPopup.text) {
+      this._createPopup(newPopup);
+      popup = this.#popupElement;
+    }
+    if (!popup) {
+      return;
+    }
+    popup.updateEdited(params);
+    if (newPopup.deleted) {
+      popup.remove();
+      this.#popupElement = null;
+      this.popup = null;
+    }
   }
 
   resetEdited() {
@@ -601,15 +616,25 @@ class AnnotationElement {
    * @private
    * @memberof AnnotationElement
    */
-  _createPopup() {
+  _createPopup(popupData = null) {
     const { data } = this;
 
+    let contentsObj, modificationDate;
+    if (popupData) {
+      contentsObj = {
+        str: popupData.text,
+      };
+      modificationDate = popupData.date;
+    } else {
+      contentsObj = data.contentsObj;
+      modificationDate = data.modificationDate;
+    }
     const popup = (this.#popupElement = new PopupAnnotationElement({
       data: {
         color: data.color,
         titleObj: data.titleObj,
-        modificationDate: data.modificationDate,
-        contentsObj: data.contentsObj,
+        modificationDate,
+        contentsObj,
         richText: data.richText,
         parentRect: data.rect,
         borderStyle: 0,
@@ -617,10 +642,15 @@ class AnnotationElement {
         rotation: data.rotation,
         noRotate: true,
       },
+      linkService: this.linkService,
       parent: this.parent,
       elements: [this],
     }));
     this.parent.div.append(popup.render());
+  }
+
+  get hasPopupElement() {
+    return !!(this.#popupElement || this.popup || this.data.popupRef);
   }
 
   /**
@@ -2338,7 +2368,7 @@ class PopupElement {
     }
   }
 
-  updateEdited({ rect, popupContent }) {
+  updateEdited({ rect, popup }) {
     this.#updates ||= {
       contentsObj: this.#contentsObj,
       richText: this.#richText,
@@ -2346,8 +2376,9 @@ class PopupElement {
     if (rect) {
       this.#position = null;
     }
-    if (popupContent) {
-      this.#richText = this.#makePopupContent(popupContent);
+    if (popup) {
+      this.#richText = this.#makePopupContent(popup.text);
+      this.#dateObj = PDFDateString.toDateObject(popup.date);
       this.#contentsObj = null;
     }
     this.#popup?.remove();
